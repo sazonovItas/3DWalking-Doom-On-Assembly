@@ -1,0 +1,17 @@
+; Ñolors
+COLOR_BLACK         = 0
+COLOR_BLUE          = 1
+COLOR_GREEN         = 2
+COLOR_CYAN          = 3
+COLOR_RED           = 4
+COLOR_MAGENTA       = 5
+COLOR_BROWN         = 6
+COLOR_LIGHTGRAY     = 7
+COLOR_DARKGRAY      = 8
+COLOR_LIGHTBLUE     = 9
+COLOR_LIGHTGREEN    = 10
+COLOR_LIGHTCYAN     = 11
+COLOR_LIGHTRED      = 12
+COLOR_LIGHTMAGENTA  = 13
+COLOR_YELLOW        = 14
+COLOR_WHITE         = 15
