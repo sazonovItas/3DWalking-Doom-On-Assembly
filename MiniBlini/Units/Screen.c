@@ -103,6 +103,106 @@ proc    Screen.WriteString uses es si di,\
 
 endp
 
+proc    Screen.DrawPixelPict uses bx di es cx,\
+        wRow, wCol, wBuffer, bClr:BYTE
+
+        push    word[wBuffer]
+        pop     es
+
+        mov     di, word[wCol]
+        mov     cx, word[wRow]
+        jcxz    .EndProc
+        .stupidLoop:
+                add     di, WIDTH
+                loop    .stupidLoop
+
+        .EndProc:
+                mov     ah, byte[bClr]
+                mov     byte[es:di], ah
+
+        ret
+
+endp
+
+proc    Screen.DrawBitPicture uses cx bx di si es,\
+        wMemPicture, wHeight, wRow, wCol, wBuffer, bClearClr:BYTE, bPictClr:BYTE
+
+        mov     di, word[wRow]
+        mov     si, word[wCol]
+        mov     bx, word[wMemPicture]
+
+        mov     cx, word[wHeight]
+        jcxz    .EndProc
+        .loopForRow:
+
+                push    cx
+                mov     cx, 8
+                mov     dl, byte[bx]
+                mov     al, 1000_0000b
+                push    si
+
+                .loopForCol:
+
+                        test    dl, al
+                        jz      .EmptyPixel
+
+                        stdcall Screen.DrawPixelPict, di, si, word[wBuffer], word[bPictClr]
+                        jmp     .continue
+
+                        .EmptyPixel:
+                                stdcall Screen.DrawPixelPict, di, si, word[wBuffer], word[bClearClr]
+
+                        .continue:
+                                inc     si
+                                shr     al, 1
+
+                        loop    .loopForCol
+
+                pop     si
+                pop     cx
+                inc     bx
+                inc     di
+
+                loop .loopForRow
+
+        .EndProc:
+
+        ret
+endp
+
+proc    Screen.DrawNumberOnScreen uses bx si di,\
+        wNumber, wBuffer, wRow, wCol, bPictClr:BYTE, bEmptyClr:BYTE
+
+        mov     ax, word[wNumber]
+        xor     cx, cx
+        mov     bx, 10
+
+        .loop1:
+                xor     dx, dx
+                div     bx
+                push    dx
+                inc     cx
+                test    ax, ax
+                jnz     .loop1
+
+                mov     bx, NumbersInGraphics
+                jcxz    .EndProc
+        .loop2:
+                pop     dx
+                push    bx
+                add     bx, dx
+                add     bx, dx
+                stdcall Screen.DrawBitPicture, word[bx], 8, word[wRow], word[wCol], word[wBuffer], word[bPictClr], word[bEmptyClr]
+                pop     bx
+
+                add     word[wCol], 8
+                loop    .loop2
+
+    .EndProc:
+
+        ret
+endp
+
 proc    Screen.DrawVerticalLine uses es si di cx,\
         wWidth, wHeight, wColumn, wStartRow, wEndRow, bColor: BYTE
 

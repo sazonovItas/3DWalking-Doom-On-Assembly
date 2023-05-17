@@ -83,6 +83,21 @@ proc    CalcSymbolOnMap uses bx di,\
 
 endp
 
+proc    SetSymbolOnMap  uses bx di,\
+        x, y, map_width, wMemMap, symbol:BYTE
+
+        mov     bx, word[wMemMap]
+        mov     di, word[y]
+        imul    di, word[map_width]
+        add     di, word[x]
+        add     bx, di
+        mov     al, byte[symbol]
+        mov     byte[bx], al
+
+        ret
+
+endp
+
 proc    CalcHeightOfCeiling uses bx,\
         wMemDistance, wScreenHeight, wMemCeiling
 

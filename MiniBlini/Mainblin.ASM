@@ -4,6 +4,7 @@
         include "Units/Colors.h"
         include "Units/Levels.h"
         include "Units/Music.h"
+        include "Units/Random.h"
 
 ; Useful things
 nil      = 0
@@ -21,10 +22,18 @@ KEY_TURN_RIGHT  = 77
 
 EntryPoint:
 
+        stdcall Random.Initialize
+
         mov     ax, cs
         add     ax, 1000h
         mov     word[Buffer], ax
+
+        StartMenu:
+
         stdcall StartWalking, 0
+
+        EndProgram:
+
         stdcall Keyboard.ReadKey
 
         ret
@@ -139,6 +148,50 @@ proc    DrawBerryLine uses es si di bx,\
         ret
 endp
 
+proc    GetBerry uses bx,\
+        wMemScore
+
+        mov     bx, word[wMemScore]
+        inc     word[bx]
+
+        ret
+
+endp
+
+proc    RandomBerry uses bx
+
+        locals
+                x       dw ?
+                y       dw ?
+                Low     dw 0
+                High    dw ?
+        endl
+
+        mov     ax, word[map_width]
+        imul    ax, word[map_height]
+        mov     word[High], ax
+
+        .loopForRandom:
+
+        stdcall Random.Get, word[Low], word[High]
+        xor     dx, dx
+        div     word[map_width]
+        mov     word[y], ax
+        mov     word[x], dx
+
+        stdcall CalcSymbolOnMap, word[x], word[y], word[map_width], word[MAP]
+        cmp     al, SPACE
+        je      EndProc
+
+        jmp     .loopForRandom
+
+
+        EndProc:
+        stdcall SetSymbolOnMap, word[x], word[y], word[map_width], word[MAP], EXIT
+
+        ret
+endp
+
 ; Use
 ;       ax, dx
 proc    Renderingkeyboard uses es di si bx
@@ -178,8 +231,6 @@ proc    Renderingkeyboard uses es di si bx
                         mov     word[AddK], -10
 
                 .end:
-
-
 
                 add     word[Note], 4
                 mov     di, word[Note]
@@ -257,8 +308,9 @@ proc    Renderingkeyboard uses es di si bx
                 cmp al, '*'
                 jne @F
 
-                .GoOutOfLabirint:
-                        mov byte[is_game_over], TRUE
+                stdcall GetBerry, Score
+                stdcall RandomBerry
+                stdcall SetSymbolOnMap, word[test_x], word[test_y], word[map_width], word[MAP], SPACE
 
                 @@:
 
@@ -311,8 +363,9 @@ proc    Renderingkeyboard uses es di si bx
                 cmp al, '*'
                 jne @F
 
-                .GoOutOfLabirintB:
-                        mov byte[is_game_over], TRUE
+                stdcall GetBerry, Score
+                stdcall RandomBerry
+                stdcall SetSymbolOnMap, word[test_x], word[test_y], word[map_width], word[MAP], SPACE
 
                 @@:
 
@@ -339,6 +392,7 @@ proc    Renderingkeyboard uses es di si bx
                 fsubp st1,st0
                 fstp dword[pos_a]
                 jmp Rendering_keyboard
+
         .turn_right:
                 fld dword[pos_a]
                 fld dword[ROTATION_SPEED] ;  st0 = ROTATION_SPEED,st1=pos_a
@@ -375,6 +429,7 @@ proc    StartWalking uses di si bx,\
 
         .StartGameSettings:
 
+                mov     word[Score], 0
                 mov     di, Levels
                 add     di, word[level]
                 add     di, word[level]
@@ -529,6 +584,9 @@ proc    StartWalking uses di si bx,\
                         cmp     word[col], WIDTH
                         jb     .ColDrawLoop
 
+        stdcall Screen.DrawBitPicture, Berry, 10, 0, 0, word[Buffer], 4, 10
+        stdcall Screen.DrawNumberOnScreen, word[Score], word[Buffer], 0, 9, 4, 10
+
         push    ds es
 
         mov     ds, word[Buffer]
@@ -547,8 +605,9 @@ proc    StartWalking uses di si bx,\
                 cmp     byte[is_game_over], FALSE
                 je      .MainLoop
 
+
         inc     word[level]
-        cmp     word[level], 3
+        cmp     word[level], 1
         jb      .StartGameSettings
 
         .EndProc:
@@ -563,6 +622,7 @@ endp
         include "Units/Screen.c"
         include "Units/Mathimatica.c"
         include "Units/Music.c"
+        include "Units/Random.c"
 
 ; =========== Data =============
 
@@ -570,6 +630,10 @@ endp
         include "Units/Colors.du"
         include "Units/Mathimatica.di"
         include "Units/Levels.di"
+        include "Units/Random.di"
+        include "Units/Screen.di"
+
+        include "Units/Random.du"
 
 ; float CONSTANTS
 RESOLUTION              dd 0.01
@@ -604,6 +668,7 @@ FloorColor              dw ?
 WallColor               dw ?
 AddVar                  dw 0
 AddK                    dw 5
+Score                   dw ?
 
 symbol                  db ?
 bSymbol                 db ?
