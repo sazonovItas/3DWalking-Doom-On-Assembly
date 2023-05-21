@@ -13,12 +13,12 @@ Number0:
 
 Number1:
         db 00000000b
-        db 00000010b
-        db 00000110b
-        db 00001010b
-        db 00010010b
-        db 00000010b
-        db 00000010b
+        db 00011000b
+        db 00011000b
+        db 00011000b
+        db 00011000b
+        db 00011000b
+        db 00011000b
         db 00000000b
 
 Number2:
@@ -105,13 +105,13 @@ NumbersInGraphics:
         dw Number0, Number1, Number2, Number3, Number4, Number5, Number6, Number7, Number8, Number9
 
 Berry:
-        db 0001_1000b
         db 0011_1100b
         db 0111_1110b
         db 0111_1110b
         db 1111_1111b
         db 1111_1111b
+        db 1111_1111b
+        db 1111_1111b
         db 0111_1110b
         db 0111_1110b
         db 0011_1100b
-        db 0001_1000b

@@ -28,15 +28,36 @@ EntryPoint:
         add     ax, 1000h
         mov     word[Buffer], ax
 
+        mov     ah, 00h
+        mov     al, 03h
+        stdcall Screen.SetMode, ax
+        mov     bx, ax
+
         StartMenu:
 
-        stdcall StartWalking, 0
+        .viewMenu:
 
-        EndProgram:
+
+        @@:
 
         stdcall Keyboard.ReadKey
+        cmp     ax, KEY_ESCAPE
+        je      .EndProgram
+
+        .PressEnter:
+                stdcall StartWalking, 0
+                jmp     @B
+
+        .EndLoop:
+                jmp StartMenu
+
+        .EndProgram:
+
 
         ret
+
+
+
 
 WIDTH   = 320
 HEIGHT  = 200
@@ -153,6 +174,7 @@ proc    GetBerry uses bx,\
 
         mov     bx, word[wMemScore]
         inc     word[bx]
+        stdcall RandomBerry
 
         ret
 
@@ -309,7 +331,6 @@ proc    Renderingkeyboard uses es di si bx
                 jne @F
 
                 stdcall GetBerry, Score
-                stdcall RandomBerry
                 stdcall SetSymbolOnMap, word[test_x], word[test_y], word[map_width], word[MAP], SPACE
 
                 @@:
@@ -364,7 +385,6 @@ proc    Renderingkeyboard uses es di si bx
                 jne @F
 
                 stdcall GetBerry, Score
-                stdcall RandomBerry
                 stdcall SetSymbolOnMap, word[test_x], word[test_y], word[map_width], word[MAP], SPACE
 
                 @@:
