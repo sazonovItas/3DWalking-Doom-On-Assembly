@@ -50,8 +50,8 @@ song1:
     dw 0, 16 * pause
     dw 0, half_note
     dw d3, quarter_note
-    dw f3, quarter_note, g3, quarter_note, d3, quarter_note, f3, quarter_note
-    dw gis3, eighth_note, g3, eighth_note, 0, half_note
-    dw d3, quarter_note, f3, quarter_note, g3, quarter_note, f3, quarter_note
-    dw d3, quarter_note
+    dw f3, quarter_note, g3, quarter_note_dot , 0, eighth_note, d3, quarter_note, f3, quarter_note
+    dw gis3, eighth_note, g3, quarter_note, 0, quarter_note
+    dw d3, quarter_note, f3, quarter_note, g3, quarter_note_dot,  f3, quarter_note
+    dw d3, quarter_note_dot
     dw MUSIC_END

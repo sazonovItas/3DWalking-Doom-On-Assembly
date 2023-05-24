@@ -657,9 +657,9 @@ endp
 
 ; float CONSTANTS
 RESOLUTION              dd 0.01
-DEPTH                   dd 16.0
-SPEED                   dd 0.1
-ROTATION_SPEED          dd 0.07
+DEPTH                   dd 20.0
+SPEED                   dd 0.2
+ROTATION_SPEED          dd 0.1
 ScreenWidth             dd 320.0
 ScreenHeight            dd 200.0
 

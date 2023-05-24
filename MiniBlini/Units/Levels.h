@@ -3,11 +3,11 @@
 SKY_COLOR           = 53
 
 ; Wall Colors
-WALL_COLOR_1        = 27
-WALL_COLOR_2        = 26
-WALL_COLOR_3        = 25
-WALL_COLOR_4        = 24
-WALL_COLOR_5        = 23
+WALL_COLOR_1        = 6 * 16 + 13
+WALL_COLOR_2        = 6 * 16 + 14
+WALL_COLOR_3        = 6 * 16 + 15
+WALL_COLOR_4        = 6 * 16 + 16
+WALL_COLOR_5        = 6 * 16 + 17
 
 ; Floor colors
 FLOOR_COLOR_1       = 117
